@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ninject;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
@@ -18,6 +16,8 @@ namespace POC.RulesEngine
 
             var executer = kernel.Get<IExecuter>();
             executer.Execute("Find");
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
         }
     }
 
@@ -45,32 +45,32 @@ namespace POC.RulesEngine
     public interface IAction
     {
         bool DoesMatch(string actionName);
-        object Execute();
+        void Execute();
     }
 
-    class AddAction : IAction
+    public class AddAction : IAction
     {
         public bool DoesMatch(string actionName)
         {
             return actionName == "Add";
         }
 
-        public object Execute()
+        public void Execute()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Executing FindAction");
         }
     }
 
-    class FindAction : IAction
+    public class FindAction : IAction
     {
         public bool DoesMatch(string actionName)
         {
             return actionName == "Find";
         }
 
-        public object Execute()
+        public void Execute()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Executing FindAction");
         }
     }
 
@@ -78,8 +78,7 @@ namespace POC.RulesEngine
     {
         public override void Load()
         {
-            Bind<IExecuter>().To<Executer>();
-            Bind<IAction>().To<FindAction>();
+            Kernel.Bind(x => x.FromThisAssembly().SelectAllClasses().BindAllInterfaces());
         }
     }
 }
